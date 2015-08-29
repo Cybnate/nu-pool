@@ -9,9 +9,19 @@ config = json.load(open('pool.conf.json'))
 clients = []
 for conf in config:
     client = nupool.Client(conf['server'])
-    if not client.set(conf['api_key'], conf['api_secret'], conf['address'], conf['exchange'], conf['unit'], conf['bid_interest'],
-                      conf['ask_interest'], conf['bot'], conf['order_match']):
-        print "Failed to start client for %s on %s using %s" % (conf['unit'], conf['exchange'], conf['api_key'])
+    if 'deviation' not in conf:
+        conf['deviation'] = 0.0025
+    if 'reset_timer' not in conf:
+        conf['reset_timer'] = 0
+    if 'offset' not in conf:
+        conf['offset'] = 0.002
+    if not client.set(conf['api_key'], conf['api_secret'], conf['address'],
+                      conf['exchange'], conf['unit'], conf['bid_interest'],
+                      conf['ask_interest'], conf['bot'], conf['order_match'],
+                      conf['deviation'], conf['reset_timer'], conf['offset']):
+        print "Failed to start client for %s on %s using %s" % (conf['unit'],
+                                                                conf['exchange'],
+                                                                conf['api_key'])
     client.start()
     clients.append(client)
 stop = False
