@@ -219,7 +219,6 @@ class Bittrex(Exchange):
 class Cryptsy(Exchange):
     def __init__(self):
         super(Cryptsy, self).__init__(0.002)
-        self.fee = 0.002
         self.market_codes = {}
         self.currency_codes = {}
         self.key = None
@@ -239,8 +238,6 @@ class Cryptsy(Exchange):
         data = urllib.urlencode(request)
         sign = hmac.new(secret, data, hashlib.sha512).hexdigest()
         headers = {'Sign': sign, 'Key': key}
-        #print request
-        #print headers
         return json.loads(urllib2.urlopen(urllib2.Request(
             url='https://api.cryptsy.com/api', data=data,
             headers=headers)).read())
@@ -253,8 +250,6 @@ class Cryptsy(Exchange):
         data = urllib.urlencode(request)
         sign = hmac.new(secret, data, hashlib.sha512).hexdigest()
         headers = {'Sign': sign, 'Key': key}
-        #print headers
-        #print 'https://api.cryptsy.com/api/v2/{0}?{1}'.format(method, data)
         return json.loads(urllib2.urlopen(urllib2.Request(
             url='https://api.cryptsy.com/api/{0}?{1}'.format(method, data),
             headers=headers)).read())
@@ -288,11 +283,25 @@ class Cryptsy(Exchange):
                     response['error'] += "," + ret['error']
         return response
 
+    def get_fee(self, unit, side, amount, price, key, secret):
+        params = {'method': 'calculatefees',
+                  'ordertype': 'Buy' if side == 'bid' else 'Sell',
+                  'quantity': amount,
+                  'price': price,
+                  'marketid': self.get_market_id(unit, key, secret)}
+        response = self.post(params, key, secret)
+        if int(response['success']) == 0:
+            return self.fee
+        return (float(response['return']['fee']) / float(price)) / 100
+
     def place_order(self, unit, side, key, secret, amount, price):
         params = {'method': 'createorder',
                   'marketid': self.get_market_id(unit, key, secret),
                   'ordertype': 'Buy' if side == 'bid' else 'Sell',
-                  'quantity': (amount * 0.99725) if side =='bid' else amount,
+                  'quantity':
+                      (str(float(amount) - float(self.get_fee(unit, side, amount,
+                                                              price, key, secret)))) if
+                      side == 'bid' else amount,
                   'price': price}
         response = self.post(params, key, secret)
         if int(response['success']) > 0:
