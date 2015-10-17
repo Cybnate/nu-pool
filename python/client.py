@@ -40,7 +40,7 @@ from trading import *
 from utils import *
 
 _wrappers = {'bittrex': Bittrex, 'poloniex': Poloniex, 'ccedk': CCEDK, 'bitcoincoid': BitcoinCoId, 'bter': BTER,
-             'testing': Peatio, 'cryptsy': Cryptsy}
+             'testing': Peatio, 'cryptsy': Cryptsy, 'southxchange': SouthXChange}
 _mainlogger = None
 
 
@@ -371,7 +371,7 @@ if __name__ == "__main__":
                     reset_timer = 0 if 'reset_timer' not in configdata else configdata[
                         'reset_timer']
                     offset = 0.002 if 'offset' not in configdata else configdata['offset']
-                    if 'server' not in configdata:
+                    if 'server' in configdata:
                         if 'apikey' in configdata:
                             if 'apisecret' in configdata:
                                 if 'address' in configdata:
