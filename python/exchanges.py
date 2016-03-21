@@ -2,17 +2,14 @@
 """
 The MIT License (MIT)
 Copyright (c) 2015 creon (creon.nu@gmail.com)
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -555,8 +552,8 @@ class CCEDK(Exchange):
                     url = 'https://www.ccedk.com/api/v1/stats/marketdepthfull'
                     response = json.loads(urllib2.urlopen(urllib2.Request(url), timeout=15).read())
                     for unit in response['response']['entities']:
-                        if unit['pair_name'][:4] == 'nbt/':
-                            self.pair_id[unit['pair_name'][4:]] = unit['pair_id']
+                        if unit['pair_name'][:7] == 'us-nbt/':
+                            self.pair_id[unit['pair_name'][7:]] = unit['pair_id']
                 if not self.currency_id:
                     url = 'https://www.ccedk.com/api/v1/currency/list'
                     response = json.loads(urllib2.urlopen(urllib2.Request(url), timeout=15).read())
@@ -1019,3 +1016,4 @@ class Peatio(Exchange):
                     'type': 'ask' if order['side'] == 'sell' else 'bid',
                     'amount': float(order['remaining_volume']),
                 } for order in response]
+
