@@ -46,7 +46,7 @@ class NuBot(ConnectionThread):
             'apikey': key,
             'apisecret': secret,
             'txfee': 0.2,
-            'pair': 'nbt_' + unit,
+            'pair': 'us-nbt_' + unit,
             'submit-liquidity': False,
             'dualside': True,
             'multiple-custodians': True,
@@ -165,7 +165,7 @@ class PyBot(ConnectionThread):
         try:
             response = self.exchange.get_balance(exunit, self.key, self.secret)
             if not 'error' in response:
-                response['balance'] = response['balance'] if exunit == 'nbt' else response['balance'] / price
+                response['balance'] = response['balance'] if exunit == 'us-nbt' else response['balance'] / price
                 response['balance'] = int(response['balance'] * 10 ** 3) / float(10 ** 3)
         except KeyboardInterrupt:
             raise
@@ -174,7 +174,7 @@ class PyBot(ConnectionThread):
         return response
 
     def place(self, side, price):
-        exunit = 'nbt' if side == 'ask' else self.unit
+        exunit = 'us-nbt' if side == 'ask' else self.unit
         order_response = self.conn.get(self.key, trials=1)
 	if side == 'ask':
           if 'error' in order_response:
