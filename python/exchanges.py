@@ -552,8 +552,8 @@ class CCEDK(Exchange):
                     url = 'https://www.ccedk.com/api/v1/stats/marketdepthfull'
                     response = json.loads(urllib2.urlopen(urllib2.Request(url), timeout=15).read())
                     for unit in response['response']['entities']:
-                        if unit['pair_name'][:7] == 'us-nbt/':
-                            self.pair_id[unit['pair_name'][7:]] = unit['pair_id']
+                        if unit['pair_name'][:7] == 'usnbt/':
+                            self.pair_id[unit['pair_name'][6:]] = unit['pair_id']
                 if not self.currency_id:
                     url = 'https://www.ccedk.com/api/v1/currency/list'
                     response = json.loads(urllib2.urlopen(urllib2.Request(url), timeout=15).read())
