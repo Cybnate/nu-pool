@@ -46,7 +46,7 @@ class NuBot(ConnectionThread):
             'apikey': key,
             'apisecret': secret,
             'txfee': 0.2,
-            'pair': 'us-nbt_' + unit,
+            'pair': 'usnbt_' + unit,
             'submit-liquidity': False,
             'dualside': True,
             'multiple-custodians': True,
@@ -165,7 +165,7 @@ class PyBot(ConnectionThread):
         try:
             response = self.exchange.get_balance(exunit, self.key, self.secret)
             if not 'error' in response:
-                response['balance'] = response['balance'] if exunit == 'us-nbt' else response['balance'] / price
+                response['balance'] = response['balance'] if exunit == 'usnbt' else response['balance'] / price
                 response['balance'] = int(response['balance'] * 10 ** 3) / float(10 ** 3)
         except KeyboardInterrupt:
             raise
@@ -174,7 +174,7 @@ class PyBot(ConnectionThread):
         return response
 
     def place(self, side, price):
-        exunit = 'us-nbt' if side == 'ask' else self.unit
+        exunit = 'usnbt' if side == 'ask' else self.unit
         order_response = self.conn.get(self.key, trials=1)
 	if side == 'ask':
           if 'error' in order_response:
@@ -211,11 +211,11 @@ class PyBot(ConnectionThread):
                     if 'residual' in response and response['residual'] > 0:
                         self.limit[side] += response['residual']
                     else:
-                        self.logger.error('unable to place %s %s order of %.4f us-nbt at %.8f on %s: %s',
+                        self.logger.error('unable to place %s %s order of %.4f usnbt at %.8f on %s: %s',
                                           side, self.unit, amount, price, repr(self.exchange), response['error'])
                     self.exchange.adjust(response['error'])
                 else:
-                    self.logger.info('successfully placed %s %s order of %.4f us-nbt at %.8f on %s',
+                    self.logger.info('successfully placed %s %s order of %.4f usnbt at %.8f on %s',
                                      side, self.unit, amount, price, repr(self.exchange))
                     self.orders.append(response['id'])
                     self.limit[side] -= amount
